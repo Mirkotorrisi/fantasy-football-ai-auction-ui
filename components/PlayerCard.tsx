@@ -33,17 +33,10 @@ const transparentRoleColors = {
   forwards: "bg-red-100/30 border-red-200",
 };
 
-const roleLabels = {
-  goalkeepers: "GK",
-  defenders: "DEF",
-  midfielders: "MID",
-  forwards: "FWD",
-};
-
 export default function PlayerCard({
   player,
   showPrice = false,
-  showTeam = false,
+  // showTeam = false,
   className = "",
   role,
 }: PlayerCardProps) {

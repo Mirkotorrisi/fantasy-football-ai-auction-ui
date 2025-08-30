@@ -2,6 +2,7 @@
 export async function convertToWav(blob: Blob): Promise<Blob> {
   // Use web-audio-api to decode and encode
   const arrayBuffer = await blob.arrayBuffer();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
   const audioCtx = new AudioCtx({ sampleRate: 44100 });
   const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
