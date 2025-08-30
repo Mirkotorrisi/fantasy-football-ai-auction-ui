@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/use-toast";
 import {
   MAX_TEAMS_LENGTH,
   MIN_TEAMS_LENGTH,
@@ -43,7 +43,6 @@ export default function LoginPage() {
   ]);
   const [budget, setBudget] = useState(500);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { toast } = useToast();
 
   const handleResumeSession = useCallback(() => {
     if (!resumeSessionId.trim()) {
@@ -57,7 +56,7 @@ export default function LoginPage() {
     const trimmedId = resumeSessionId.trim();
     localStorage.setItem("sessionId", trimmedId);
     router.push(`/session/${trimmedId}`);
-  }, [resumeSessionId, toast, router]);
+  }, [resumeSessionId, router]);
 
   // Load session ID from localStorage on mount
   useEffect(() => {
