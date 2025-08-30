@@ -155,3 +155,25 @@ export async function fetchAvailablePlayers(
     `${BASE_URL}/players-list?session_id=${encodeURIComponent(sessionId)}`
   );
 }
+
+// Delete a player from a roster
+export async function deletePlayerFromRoster(
+  sessionId: string,
+  player: Player,
+  teamName: string,
+  currentRole: Role
+): Promise<Rosters> {
+  if (!sessionId?.trim()) {
+    throw new Error("Session ID is required");
+  }
+
+  return makeRequest<Rosters>(`${BASE_URL}/delete-player`, {
+    method: "POST",
+    body: JSON.stringify({
+      player_name: player.name,
+      team_name: teamName,
+      current_role: currentRole,
+      session_id: sessionId,
+    }),
+  });
+}

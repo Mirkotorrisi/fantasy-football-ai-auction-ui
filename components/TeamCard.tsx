@@ -74,12 +74,13 @@ export default function TeamCard({
                 player={player}
                 showPrice
                 role={role}
+                teamName={roster.name}
               />
             ))}
             {Array.from(
               Array(ROLE_SLOTS[role] - roster.players[role].length)
             ).map((_, index) => (
-              <PlayerCard key={index} role={role} />
+              <PlayerCard key={index} role={role} teamName={roster.name} />
             ))}
           </div>
         </CardContent>

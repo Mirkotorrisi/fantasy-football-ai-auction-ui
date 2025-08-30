@@ -1,8 +1,9 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { useSession } from "@/context/SessionContext";
 import { Role } from "@/types/enum";
-import { DollarSign } from "lucide-react";
+import { DollarSign, Trash } from "lucide-react";
 
 interface Player {
   id: string;
@@ -18,6 +19,7 @@ interface PlayerCardProps {
   showTeam?: boolean;
   className?: string;
   role?: Role;
+  teamName: string;
 }
 
 const roleColors = {
@@ -39,7 +41,9 @@ export default function PlayerCard({
   // showTeam = false,
   className = "",
   role,
+  teamName,
 }: PlayerCardProps) {
+  const { handleDeletePlayer } = useSession();
   if (!player)
     return (
       <Card
@@ -56,19 +60,25 @@ export default function PlayerCard({
     );
   return (
     <Card
-      className={`hover:shadow-md transition-shadow py-0 border-0 ${
+      className={`hover:shadow-md group transition-shadow py-0 h-8 flex items-center border-0 ${
         role ? roleColors[role] : ""
       } ${className}`}
     >
-      <CardContent className="py-0 flex justify-between items-center gap-1">
-        <span className="font-medium text-xs truncate">{player.name}</span>
+      <CardContent className="py-0 flex items-center gap-1 w-full h-full">
+        <span className="font-medium text-xs truncate w-full">
+          {player.name}
+        </span>
 
         {showPrice && player.price && (
-          <div className="flex items-center gap-1">
+          <div className="items-center gap-1 flex group-hover:hidden">
             <DollarSign className="w-3 h-3" />
             <span>{player.price}</span>
           </div>
         )}
+        <Trash
+          className="cursor-pointer w-7 h-6 hidden group-hover:block rounded-full p-1 text-red-500 hover:text-white hover:bg-red-500"
+          onClick={() => handleDeletePlayer(player, teamName)}
+        />
       </CardContent>
     </Card>
   );

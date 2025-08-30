@@ -4,6 +4,7 @@ import { toast } from "@/hooks/use-toast";
 import { INITIAL_PLAYERS } from "@/lib/consts";
 import {
   BASE_URL,
+  deletePlayerFromRoster,
   fetchAvailablePlayers,
   fetchRosters,
   updateAuctionByText,
@@ -35,6 +36,7 @@ interface SessionContextType {
   submitQuery: (inputText: string) => Promise<void>;
   handleLogout: () => void;
   downloadLink: string;
+  handleDeletePlayer: (player: Player, teamName: string) => Promise<void>;
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
@@ -126,6 +128,24 @@ export function SessionProvider({
     redirect("/");
   };
 
+  const handleDeletePlayer = async (player: Player, teamName: string) => {
+    if (!player) return;
+
+    try {
+      const updatedRosters = await deletePlayerFromRoster(
+        sessionId,
+        player,
+        teamName,
+        currentRole
+      );
+      setRosters(updatedRosters);
+      const updatedAvailablePlayers = await fetchAvailablePlayers(sessionId);
+      setAvailablePlayers(updatedAvailablePlayers);
+    } catch (error) {
+      console.error("Error deleting player:", error);
+    }
+  };
+
   return (
     <SessionContext.Provider
       value={{
@@ -142,6 +162,7 @@ export function SessionProvider({
         submitQuery,
         handleLogout,
         downloadLink,
+        handleDeletePlayer,
       }}
     >
       {children}
