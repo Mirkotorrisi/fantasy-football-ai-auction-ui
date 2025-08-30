@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fantacalcio AI UI
+
+A modern UI application for fantasy football (Fantacalcio) management with AI-powered features.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js (v16 or later)
+- npm or yarn
+
+### Installation
+
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/yourusername/fantacalcio-ai-ui.git
+cd fantacalcio-ai-ui
+npm install
+# or
+yarn install
+```
+
+### Running the Application
+
+Development mode:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Build for production:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+npm run start
+# or
+yarn build
+yarn start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+### Pages
 
-To learn more about Next.js, take a look at the following resources:
+The application follows a standard page structure using a modern React framework:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `/pages`
+  - `index.js` - Homepage
+  - `players/` - Player-related pages
+    - `index.js` - Players overview
+    - `[id].js` - Individual player details
+  - `teams/` - Team management
+  - `matches/` - Match schedules and results
+  - `stats/` - Statistics and analytics
+  - `settings/` - User settings
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Components
 
-## Deploy on Vercel
+Components are organized by feature and reusability:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `/components`
+  - `/common` - Reusable UI components
+    - `Button.jsx`
+    - `Card.jsx`
+    - `Modal.jsx`
+    - `Table.jsx`
+  - `/layout` - Layout components
+    - `Header.jsx`
+    - `Footer.jsx`
+    - `Sidebar.jsx`
+  - `/players` - Player-specific components
+    - `PlayerCard.jsx`
+    - `PlayerStats.jsx`
+  - `/teams` - Team-specific components
+  - `/matches` - Match-specific components
+  - `/ai` - AI recommendation components
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Technologies and Libraries
+
+### Core
+
+- **React** - UI library
+- **Next.js** - React framework for server-side rendering
+- **TypeScript** - Type checking
+
+### Styling
+
+- **Tailwind CSS** - Utility-first CSS framework
+- **Styled Components** - Component-level styling
+
+### State Management
+
+- **Redux Toolkit** or **React Context API** - State management
+- **React Query** - Server state management
+
+### AI and Data Processing
+
+- **TensorFlow.js** or custom AI integration for player recommendations
+- **D3.js** - Data visualization
+
+### Testing
+
+- **Jest** - Testing framework
+- **React Testing Library** - Component testing
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
