@@ -3,6 +3,7 @@
 import { toast } from "@/hooks/use-toast";
 import { INITIAL_PLAYERS } from "@/lib/consts";
 import {
+  BASE_URL,
   fetchAvailablePlayers,
   fetchRosters,
   updateAuctionByText,
@@ -13,6 +14,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
   type ReactNode,
 } from "react";
@@ -31,6 +33,7 @@ interface SessionContextType {
   loadData: () => Promise<void>;
   submitQuery: (inputText: string) => Promise<void>;
   handleLogout: () => void;
+  downloadLink: string;
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
@@ -49,6 +52,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [currentRole, setCurrentRole] = useState<Role>(Role.Goalkeeper);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const downloadLink = useMemo(
+    () => `${BASE_URL}/export-rosters?session_id=${sessionId}`,
+    [sessionId]
+  );
 
   useEffect(() => {
     const latestSessionId = localStorage.getItem("sessionId") || "";
@@ -93,7 +101,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       await updateAuctionByText({
         input_text: inputText,
         session_id: sessionId!,
-        current: currentRole,
+        current_role: currentRole,
       });
 
       // Refresh data after successful update
@@ -138,6 +146,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         loadData,
         submitQuery,
         handleLogout,
+        downloadLink,
       }}
     >
       {children}

@@ -1,7 +1,7 @@
 import { Player, Rosters } from "@/types";
 import { Role } from "@/types/enum";
 
-const BASE_URL = "https://fantacalcio-ai-assistant.vercel.app";
+export const BASE_URL = "https://fantacalcio-ai-assistant.vercel.app";
 
 export interface CreateSessionRequest {
   team_names: string[];
@@ -15,7 +15,7 @@ export interface CreateSessionResponse {
 export interface UpdateAuctionRequest {
   input_text: string;
   session_id: string;
-  current: Role;
+  current_role: Role;
 }
 
 async function makeRequest<T>(url: string, options?: RequestInit): Promise<T> {
@@ -93,7 +93,7 @@ export async function updateAuctionByText(
     throw new Error("Session ID is required");
   }
 
-  if (!Object.values(Role).includes(data.current)) {
+  if (!Object.values(Role).includes(data.current_role)) {
     throw new Error("Invalid role specified");
   }
 
@@ -111,7 +111,7 @@ export async function updateAuctionByAudio(
   const formData = new FormData();
   formData.append("file", wavBlob, "audio.wav");
   formData.append("session_id", session_id);
-  formData.append("current", current);
+  formData.append("current_role", current);
   // Validate input
   if (!current) {
     throw new Error("Current role is required");
