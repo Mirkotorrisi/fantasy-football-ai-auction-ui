@@ -1,14 +1,13 @@
-"use client"
+"use client";
 
-import { SessionProvider } from "@/context/SessionContext"
-import LoginPage from "@/pages/LoginPage"
-import HomePage from "@/pages/HomePage"
-import { useSession } from "@/context/SessionContext"
+import HomePage from "@/components/pages/HomePage";
+import LoginPage from "@/components/pages/LoginPage";
+import { SessionProvider, useSession } from "@/context/SessionContext";
 
 function AppContent() {
-  const { sessionId } = useSession()
+  const { sessionId } = useSession();
 
-  return sessionId ? <HomePage /> : <LoginPage />
+  return sessionId ? <HomePage /> : <LoginPage />;
 }
 
 export default function App() {
@@ -16,5 +15,5 @@ export default function App() {
     <SessionProvider>
       <AppContent />
     </SessionProvider>
-  )
+  );
 }
