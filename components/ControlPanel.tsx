@@ -63,7 +63,7 @@ const ControlPanel = ({ setIsPlayersModalOpen }: Props) => {
               sessionId={sessionId}
               current={currentRole}
               disabled={isLoading || isSubmitting}
-              onSuccess={loadData}
+              onSuccess={() => loadData(sessionId)}
               isTextInputFocused={isTextInputFocused}
             />
             <span className="text-sm text-muted-foreground">
