@@ -7,6 +7,15 @@ type Props = {
   rosters?: Rosters;
 };
 
+const rostersGridClasses = {
+  6: "lg:grid-cols-6",
+  8: "lg:grid-cols-8",
+  10: "lg:grid-cols-10",
+  12: "lg:grid-cols-12",
+};
+
+type RostersLength = 6 | 8 | 10 | 12;
+
 const RostersComponent = ({ isLoading, rosters }: Props) => {
   if (isLoading)
     return (
@@ -17,9 +26,12 @@ const RostersComponent = ({ isLoading, rosters }: Props) => {
       </div>
     );
 
+  const rostersGridClass =
+    rostersGridClasses[rosters?.teams.length as RostersLength] ?? "";
+
   if (!!rosters?.teams?.length)
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-10">
+      <div className={`grid grid-cols-1 md:grid-cols-2 ${rostersGridClass}`}>
         {rosters?.teams?.map((teamRoster) => (
           <TeamCard
             key={teamRoster.id}

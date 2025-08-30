@@ -5,6 +5,11 @@ import { Download, LogOut, RefreshCw } from "lucide-react";
 const Header = () => {
   const { sessionId, isLoading, loadData, handleLogout, downloadLink } =
     useSession();
+
+  const handleRefresh = () => {
+    if (!sessionId) return;
+    loadData(sessionId);
+  };
   return (
     <header className="bg-white border-b shadow-sm">
       <div className="container mx-auto px-4 py-4">
@@ -29,7 +34,7 @@ const Header = () => {
             <Button
               variant="outline"
               size="sm"
-              onClick={loadData}
+              onClick={handleRefresh}
               disabled={isLoading}
             >
               <RefreshCw

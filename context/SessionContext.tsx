@@ -10,8 +10,10 @@ import {
 } from "@/services/api";
 import { Player, Rosters } from "@/types";
 import { Role } from "@/types/enum";
+import { redirect } from "next/navigation";
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -21,7 +23,6 @@ import {
 
 interface SessionContextType {
   sessionId: string | null;
-  setSessionId: (id: string) => void;
   availablePlayers: Record<Role, Player[]>;
   rosters: Rosters | undefined;
   currentRole: Role;
@@ -30,7 +31,7 @@ interface SessionContextType {
   isSubmitting: boolean;
   setIsLoading: (loading: boolean) => void;
   setIsSubmitting: (submitting: boolean) => void;
-  loadData: () => Promise<void>;
+  loadData: (sessionId: string) => Promise<void>;
   submitQuery: (inputText: string) => Promise<void>;
   handleLogout: () => void;
   downloadLink: string;
@@ -38,8 +39,13 @@ interface SessionContextType {
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
-export function SessionProvider({ children }: { children: ReactNode }) {
-  const [sessionId, setSessionId] = useState<string | null>(null);
+export function SessionProvider({
+  sessionId,
+  children,
+}: {
+  sessionId: string;
+  children: ReactNode;
+}) {
   const [availablePlayers, setAvailablePlayers] = useState<
     Record<Role, Player[]>
   >({
@@ -57,21 +63,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     () => `${BASE_URL}/export-rosters?session_id=${sessionId}`,
     [sessionId]
   );
-
-  useEffect(() => {
-    const latestSessionId = localStorage.getItem("sessionId") || "";
-    if (latestSessionId) {
-      setSessionId(latestSessionId);
-    }
-  }, [setSessionId]);
-
-  useEffect(() => {
-    if (sessionId) {
-      loadData();
-    }
-  }, [sessionId]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async (sessionId: string) => {
     if (!sessionId) return;
 
     setIsLoading(true);
@@ -80,7 +72,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         fetchRosters(sessionId),
         fetchAvailablePlayers(sessionId),
       ]);
-      console.log("🚀 ~ loadData ~ rosters:", rosters);
       setRosters(rosters);
       setAvailablePlayers(players);
     } catch (error) {
@@ -93,7 +84,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!sessionId) return;
+    loadData(sessionId);
+  }, [sessionId, loadData]);
 
   const submitQuery = async (inputText: string) => {
     setIsSubmitting(true);
@@ -105,7 +101,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       });
 
       // Refresh data after successful update
-      await loadData();
+      await loadData(sessionId);
 
       toast({
         title: "Success",
@@ -124,17 +120,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   };
 
   const handleLogout = () => {
-    setSessionId("");
     setRosters(undefined);
     localStorage.removeItem("sessionId");
     setAvailablePlayers(INITIAL_PLAYERS);
+    redirect("/");
   };
 
   return (
     <SessionContext.Provider
       value={{
         sessionId,
-        setSessionId,
         availablePlayers,
         rosters,
         currentRole,

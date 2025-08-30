@@ -9,7 +9,7 @@ export interface CreateSessionRequest {
 }
 
 export interface CreateSessionResponse {
-  sessionId: string;
+  session_id: string;
 }
 
 export interface UpdateAuctionRequest {

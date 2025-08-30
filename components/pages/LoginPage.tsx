@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useSession } from "@/context/SessionContext";
 import { useToast } from "@/hooks/use-toast";
 import {
   MAX_TEAMS_LENGTH,
@@ -27,11 +26,13 @@ import {
 } from "@/lib/consts";
 import { createSession } from "@/services/api";
 import { LogIn, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [resumeSessionId, setResumeSessionId] = useState("");
-
+  const [isLoading, setIsLoading] = useState(false);
   const [teamNames, setTeamNames] = useState<string[]>([
     "",
     "",
@@ -42,7 +43,6 @@ export default function LoginPage() {
   ]);
   const [budget, setBudget] = useState(500);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { setSessionId, setIsLoading } = useSession();
   const { toast } = useToast();
 
   const handleResumeSession = useCallback(() => {
@@ -55,9 +55,9 @@ export default function LoginPage() {
       return;
     }
     const trimmedId = resumeSessionId.trim();
-    setSessionId(trimmedId);
     localStorage.setItem("sessionId", trimmedId);
-  }, [resumeSessionId, setSessionId, toast]);
+    router.push(`/session/${trimmedId}`);
+  }, [resumeSessionId, toast, router]);
 
   // Load session ID from localStorage on mount
   useEffect(() => {
@@ -106,20 +106,19 @@ export default function LoginPage() {
       });
       return;
     }
-
+    setIsDialogOpen(false);
     setIsLoading(true);
     try {
       const response = await createSession({
         team_names: validTeamNames,
         budget,
       });
-      setSessionId(response.sessionId);
-      localStorage.setItem("sessionId", response.sessionId);
-      setIsDialogOpen(false);
+      localStorage.setItem("sessionId", response.session_id);
       toast({
         title: "Success",
         description: "New session created successfully!",
       });
+      router.push(`/session/${response.session_id}`);
     } catch (error) {
       toast({
         title: "Error",
@@ -127,10 +126,19 @@ export default function LoginPage() {
           error instanceof Error ? error.message : "Failed to create session",
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center z-50">
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-600 border-t-transparent"></div>
+          <p className="text-green-700 font-medium">Creating your session...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
