@@ -9,7 +9,7 @@ import { Filter, Search } from "lucide-react";
 import { useState } from "react";
 import PlayerCard from "./PlayerCard";
 
-interface PlayersTableProps {
+type Props = {
   players: {
     goalkeepers: Player[];
     defenders: Player[];
@@ -18,13 +18,15 @@ interface PlayersTableProps {
   };
   currentRole: Role;
   title?: string;
-}
+  handleDeletePlayer?: (player: Player, teamName: string) => void;
+};
 
 export default function PlayersTable({
   players = INITIAL_PLAYERS,
   currentRole,
   title = "Available Players",
-}: PlayersTableProps) {
+  handleDeletePlayer,
+}: Props) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const rolePlayers =
@@ -60,7 +62,12 @@ export default function PlayersTable({
         {rolePlayers.length > 0 ? (
           <div className="space-y-2 max-h-96 overflow-y-auto">
             {rolePlayers.map((player) => (
-              <PlayerCard key={player.name} player={player} showPrice />
+              <PlayerCard
+                key={player.name}
+                player={player}
+                showPrice
+                handleDeletePlayer={handleDeletePlayer}
+              />
             ))}
           </div>
         ) : (

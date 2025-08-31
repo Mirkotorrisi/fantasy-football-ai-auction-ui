@@ -11,7 +11,7 @@ export interface Player {
 export interface Rosters {
   id: number;
   lastUpdate: string;
-  current: Role;
+  current_role: Role;
   teams: TeamRoster[];
   initialBudget: number;
 }

@@ -24,6 +24,7 @@ const ControlPanel = ({ setIsPlayersModalOpen }: Props) => {
     isSubmitting,
     submitQuery,
   } = useSession();
+
   const handleTextSubmit = async () => {
     if (!textInput.trim() || !sessionId) return;
     await submitQuery(textInput);

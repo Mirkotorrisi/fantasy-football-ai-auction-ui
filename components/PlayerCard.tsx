@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { useSession } from "@/context/SessionContext";
 import { Role } from "@/types/enum";
 import { DollarSign, Trash } from "lucide-react";
 
@@ -19,7 +18,8 @@ interface PlayerCardProps {
   showTeam?: boolean;
   className?: string;
   role?: Role;
-  teamName: string;
+  teamName?: string;
+  handleDeletePlayer?: (player: Player, teamName: string) => void;
 }
 
 const roleColors = {
@@ -42,8 +42,8 @@ export default function PlayerCard({
   className = "",
   role,
   teamName,
+  handleDeletePlayer,
 }: PlayerCardProps) {
-  const { handleDeletePlayer } = useSession();
   if (!player)
     return (
       <Card
@@ -70,15 +70,21 @@ export default function PlayerCard({
         </span>
 
         {showPrice && player.price && (
-          <div className="items-center gap-1 flex group-hover:hidden">
+          <div
+            className={`items-center gap-1 flex ${
+              !!handleDeletePlayer ? "group-hover:hidden" : ""
+            }`}
+          >
             <DollarSign className="w-3 h-3" />
             <span>{player.price}</span>
           </div>
         )}
-        <Trash
-          className="cursor-pointer w-7 h-6 hidden group-hover:block rounded-full p-1 text-red-500 hover:text-white hover:bg-red-500"
-          onClick={() => handleDeletePlayer(player, teamName)}
-        />
+        {handleDeletePlayer && teamName && (
+          <Trash
+            className="cursor-pointer w-7 h-6 hidden group-hover:block rounded-full p-1 text-red-500 hover:text-white hover:bg-red-500"
+            onClick={() => handleDeletePlayer(player, teamName)}
+          />
+        )}
       </CardContent>
     </Card>
   );

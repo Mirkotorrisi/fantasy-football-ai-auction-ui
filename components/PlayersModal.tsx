@@ -9,6 +9,7 @@ type Props = {
   availablePlayers: Record<Role, Player[]>;
   currentRole: Role;
   setIsPlayersModalOpen: (open: boolean) => void;
+  handleDeletePlayer?: (player: Player, teamName: string) => void;
 };
 
 const PlayersModal = ({
@@ -16,6 +17,7 @@ const PlayersModal = ({
   availablePlayers,
   currentRole,
   setIsPlayersModalOpen,
+  handleDeletePlayer,
 }: Props) => {
   return (
     <div
@@ -49,6 +51,7 @@ const PlayersModal = ({
           title={`Available ${
             currentRole.charAt(0).toUpperCase() + currentRole.slice(1)
           }`}
+          handleDeletePlayer={handleDeletePlayer}
         />
       )}
     </div>

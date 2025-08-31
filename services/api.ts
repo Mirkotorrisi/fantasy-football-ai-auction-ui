@@ -1,7 +1,9 @@
 import { Player, Rosters } from "@/types";
 import { Role } from "@/types/enum";
 
-export const BASE_URL = "https://fantacalcio-ai-assistant.vercel.app";
+const SERVER_DOMAIN = "fantacalcio-ai-assistant.vercel.app";
+export const BASE_URL = `https://${SERVER_DOMAIN}`;
+export const WS_BASE_URL = `ws://${SERVER_DOMAIN}`;
 
 export interface CreateSessionRequest {
   team_names: string[];
