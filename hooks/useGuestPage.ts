@@ -27,7 +27,7 @@ export function useGuestPage(sessionId: string) {
   // Connection and listeners
   useEffect(() => {
     if (!sessionId) return;
-    const url = `${WS_BASE_URL}/wss?session_id=${sessionId}`;
+    const url = `${WS_BASE_URL}/ws?session_id=${sessionId}`;
 
     const socket = new WebSocket(url);
     socketRef.current = socket;
