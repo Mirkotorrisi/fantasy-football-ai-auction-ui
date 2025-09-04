@@ -1,5 +1,9 @@
 import { INITIAL_PLAYERS } from "@/lib/consts";
-import { fetchAvailablePlayers, WS_BASE_URL } from "@/services/api";
+import {
+  fetchAvailablePlayers,
+  fetchRosters,
+  WS_BASE_URL,
+} from "@/services/api";
 import { Player, Rosters } from "@/types";
 import { Role } from "@/types/enum";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -14,20 +18,27 @@ export function useGuestPage(sessionId: string) {
   > | null>(INITIAL_PLAYERS);
   const [isConnected, setIsConnected] = useState(false);
 
-  const fetchPlayers = useCallback(async () => {
+  const setUpPlayers = useCallback(async () => {
     const players = await fetchAvailablePlayers(sessionId);
     setAvailablePlayers(players);
   }, [sessionId]);
 
-  // Load players on first render
+  const getInitialSetup = useCallback(async () => {
+    const rosters = await fetchRosters(sessionId);
+    setRosters(rosters);
+    setUpPlayers();
+  }, [sessionId, setUpPlayers]);
+
+  // Load players and rosters on first render
   useEffect(() => {
-    fetchPlayers();
-  }, [fetchPlayers]);
+    if (!rosters) getInitialSetup();
+  }, [getInitialSetup, rosters]);
 
   // Connection and listeners
   useEffect(() => {
     if (!sessionId) return;
     const url = `${WS_BASE_URL}/ws?session_id=${sessionId}`;
+    console.log("🚀 ~ useGuestPage ~ url:", url);
 
     const socket = new WebSocket(url);
     socketRef.current = socket;
@@ -41,7 +52,7 @@ export function useGuestPage(sessionId: string) {
       console.log("📩 Message received:", event.data);
       const payload = JSON.parse(event.data);
       setRosters(payload.data as Rosters);
-      fetchPlayers();
+      setUpPlayers();
     };
 
     socket.onerror = (error) => {
@@ -57,7 +68,7 @@ export function useGuestPage(sessionId: string) {
     return () => {
       socket.close();
     };
-  }, [sessionId, fetchPlayers]);
+  }, [sessionId, setUpPlayers]);
 
   // Function to send messages
   const sendMessage = useCallback((message: string) => {
